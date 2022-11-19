@@ -1,0 +1,51 @@
+.states{
+    height: 50px;
+    padding: 0 25px;
+    background-color: #EBEBEB;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.oldlist{
+    width: 100%;
+    list-style: none;
+}
+.oldlist .oldeitem{
+    width: 100%;
+    height: 70px;
+    border-top: 1px solid #c1c1c1;
+    border-bottom: 1px solid #c1c1c1;
+    position: relative;
+    font-size: 1.1em;
+    background-color: red;
+}
+.oldlist .oldeitem.active{
+    height: 140px;
+}
+.info{
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-bottom: 1px solid #c1c1c1;
+}
+.btn{
+    font-size: 1em;
+    border-radius: 5px;
+    width: 80px;
+    height: 32px;
+    text-align: center;
+    background-color: #3893E8;
+    color: white;
+    letter-spacing: 3px;
+}
+
+.shop{
+    height: 70px;
+    background-color: red;
+    transition: 1s;
+}
+.shop.active{
+    display: none;
+}
