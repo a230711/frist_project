@@ -1,7 +1,8 @@
+import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function ListTable({ rows }) {
+function ListTable({ name, address, shop_sid, member_sid,  order_sid}) {
   const [btn, setBtn] = useState(false);
   const [toggle, setToggle] = useState(false);
 
@@ -9,44 +10,62 @@ function ListTable({ rows }) {
 
   return (
     <>
-      <ul className="oldlist">
-        <li className="oldeitem">
-          <div className="info">
-            <i
-              className="fa-solid fa-angle-down"
-              onClick={() => {
-                setBtn(!btn);
-                // {btn ? 'active' : ''}    //之後加到oldeitem
-              }}
-            ></i>
-            <p>製作時間{}</p>
-            <p>距離{}</p>
-            {/* ----------------------接單按鈕----------------------- */}
-            <button
-              className="btn"
-              disabled={toggle}
-              onClick={() => {
-                if (localStorage.getItem('onlie_state')) {
-                  //判斷是否登入(Context或是localStorage)
-                  const argee = window.confirm('確定接單嗎？');
-                  if (argee) {
-                    setToggle(!toggle);
-                    navi('/Deliver/DeliverOrder');
-                  }
-                } else {
-                  alert('你尚未登入'); //導入到登入畫面
-                  navi('/Deliver/DeliverLogin');
+      <li className="oldeitem">
+        <div className="info">
+          <i
+            className={btn ? "fa-solid fa-angle-down" : "fa-solid fa-angle-right"}
+            onClick={() => {
+              setBtn(!btn);
+              // {btn ? 'active' : ''}    //之後加到oldeitem
+            }}
+          ></i>
+          <p>製作時間{}</p>
+          <p>距離{}</p>
+          {/* ----------------------接單按鈕----------------------- */}
+          <button
+            className="btn"
+            disabled={toggle}
+            onClick={() => {
+              if (localStorage.getItem('onlie_state')) {     //判斷是否登入(localStorage) 
+                const argee = window.confirm('確定接單嗎？');
+                if (argee) {
+                  setToggle(!toggle);
+                  
+                  // const member = 1;  //不用特別寫
+                  // const shop_sid = {}; //不用特別寫
+                  const deliver_sid = Number(localStorage.getItem('deliver_sid'));
+                  const deliver_order_sid = "3" + Number(new Date());  
+                  const store_order_sid = 1;  //店家訂單sid應概是店家產生(再研究)
+                  // const order_sid = order_sid;  //會員訂單sid在shop_order.order_sid抓出來就不用再寫了
+                  const deliver_memo = 'apple2';  //外送員備註(再研究)
+                  const order_finish = 0;     //自動生成0即可
+                  const deliver_fee = 50;     //外送費(再研究)
+                  const ordernum = {deliver_order_sid, member_sid, shop_sid, deliver_sid, store_order_sid, order_sid, order_finish, deliver_fee, deliver_memo}
+                  // console.log(ordernum);
+                  localStorage.setItem('order_sid', JSON.stringify(order_sid));
+                  localStorage.setItem('deliver_order_sid', JSON.stringify(deliver_order_sid));
+                  axios.post('http://localhost:3005/sendOrder', ordernum)
+                  .then(r => r.json);
+                  navi('/Deliver/DeliverOrder');
                 }
-              }}
-            >
-              {toggle ? '已接單' : '接單'}
-            </button>
-            {/* ----------------------------------------------------- */}
-          </div>
-          <div className={btn ? 'shop' : 'shop active'}>店家{}</div>
-        </li>
-        
-      </ul>
+              } else {
+                alert('你尚未登入'); //導入到登入畫面
+                navi('/Deliver/DeliverLogin');
+              }
+            }}
+          >
+            {toggle ? '已接單' : '接單'}
+          </button>
+          {/* ----------------------------------------------------- */}
+        </div>
+        {btn &&<div className="shopmore">
+        <i className="fa-solid fa-store icon"></i>
+        <div>
+          <p>{name}</p>
+          <p>{address}</p>
+        </div>
+        </div>}
+      </li>
     </>
   );
 }
